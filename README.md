@@ -4,23 +4,6 @@ This guide will help you get started with the **Unified Bridge** and the **lxly.
 
 ---
 
-## Prerequisites and Dependencies
-
-Before you begin, ensure you have the following installed and configured:
-
-- **Node.js:**  
-  Make sure Node.js (version 12 or higher) is installed on your system. You can download it from [nodejs.org](https://nodejs.org/).
-
-- **NPM or Yarn:**  
-  Use NPM (which comes bundled with Node.js) or Yarn to manage your project dependencies.
-
-- **HDWalletProvider:**  
-  This provider (or a similar alternative) is necessary for signing transactions with your private keys. Install it via:
-  ```bash
-  npm install @truffle/hdwallet-provider
-
----
-
 ## 1. Transaction States Overview
 
 When bridging assets, a transaction goes through three key states:
