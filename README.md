@@ -1,6 +1,3 @@
-# Getting-Started-
-
-
 # Unified Bridge & lxly.js Quick Start Guide
 
 This guide will help you get started with the **Unified Bridge** and the **lxly.js** library. It covers the transaction states during bridging, describes the utility file for client initialization, demonstrates how to bridge and claim assets, and explains how to track your transactions using the Transaction API.
@@ -69,18 +66,21 @@ const getLxLyClient = async (network = 'testnet') => {
   });
 }
 
-3. Bridging Assets (bridge_asset.js)
+## 3. Bridging Assets (`bridge_asset.js`)
 
 This file demonstrates how to initiate a cross-chain asset transfer.
-	•	sourceNetworkId:
-The network ID for the source chain (e.g., 0 for Sepolia).
-	•	destinationNetworkId:
-The network ID for the destination chain (e.g., 1 for Cardona).
-	•	bridgeAsset API:
-Invoked as bridgeAsset(amount, userAddress, destinationNetwork), where amount is specified in the smallest unit (like wei for Ether).
 
-Example: bridge_asset.js
+- **sourceNetworkId:**  
+  The network ID for the source chain (e.g., `0` for Sepolia).
 
+- **destinationNetworkId:**  
+  The network ID for the destination chain (e.g., `1` for Cardona).
+
+- **bridgeAsset API:**  
+  Invoked as `bridgeAsset(amount, userAddress, destinationNetwork)`, where `amount` is specified in the smallest unit (like wei for Ether).
+
+### Example: `bridge_asset.js`
+```javascript
 const { getLxLyClient, tokens, configuration, from, to } = require('./utils/utils_lxly');
 
 const execute = async () => {
@@ -113,19 +113,22 @@ execute()
   .finally(() => {
     process.exit(0);
   });
-
-4. Claiming Bridged Assets (claim_asset.js)
+ 
+## 4. Claiming Bridged Assets (`claim_asset.js`)
 
 After the asset has been bridged, you must claim it on the destination chain.
-	•	sourceNetworkId:
-The network ID for the source chain where the asset was originally bridged.
-	•	destinationNetworkId:
-The network ID for the destination chain where the asset is now available.
-	•	claimAsset API:
-Invoked as claimAsset(bridgeTransactionHash, sourceNetworkId, options), where bridgeTransactionHash is the hash returned from the bridgeAsset call.
 
-Example: claim_asset.js
+- **sourceNetworkId:**  
+  The network ID for the source chain where the asset was originally bridged.
 
+- **destinationNetworkId:**  
+  The network ID for the destination chain where the asset is now available.
+
+- **claimAsset API:**  
+  Invoked as `claimAsset(bridgeTransactionHash, sourceNetworkId, options)`, where `bridgeTransactionHash` is the hash returned from the `bridgeAsset` call.
+
+### Example: `claim_asset.js`
+```javascript
 const execute = async () => {
     // The transaction hash from the bridgeAsset call on the source chain
     const bridgeTransactionHash = "0x1fc6858b20c75189a9fa8f3ae60c2a255cc3c41a058781f33daa57fc0f80b81a";
@@ -158,43 +161,37 @@ execute()
     console.error("err", err);
   });
 
-5. Transaction API
+## Transaction API
 
 The Transaction API provides detailed information on a bridge transaction associated with a user’s wallet. It includes real-time status updates, the token bridged, the amount transferred, and the source and destination chains. This is especially useful for building user interfaces that display transaction statuses.
 
-API Endpoints
-	•	Testnet:
+### API Endpoints
 
-https://api-gateway.polygon.technology/api/v3/transactions/testnet?userAddress={userAddress}
+- **Testnet:**  
+  `https://api-gateway.polygon.technology/api/v3/transactions/testnet?userAddress={userAddress}`
 
+- **Mainnet:**  
+  `https://api-gateway.polygon.technology/api/v3/transactions/mainnet?userAddress={userAddress}`
 
-	•	Mainnet:
+> **Note:**  
+> Replace `{userAddress}` with the wallet address associated with the cross-chain transaction.  
+> **Attach your API Key in the header!**
 
-https://api-gateway.polygon.technology/api/v3/transactions/mainnet?userAddress={userAddress}
+### Example cURL Command
 
-
-
-	Note:
-Replace {userAddress} with the wallet address associated with the cross-chain transaction.
-Attach your API Key in the header!
-
-Example cURL Command
-
+```bash
 curl --location 'https://api-gateway.polygon.technology/api/v3/transactions/mainnet?userAddress={userAddress}' \
 --header 'x-api-key: <your-api-key-here>'
 
-For additional details, please refer to the Unified Bridge Developer Guide.
+## Final Notes
 
-Final Notes
-	•	Transaction Flow:
-	•	Start with a BRIDGED state when you call bridgeAsset.
-	•	The asset becomes READY_TO_CLAIM once available on the destination chain.
-	•	It transitions to CLAIMED after you use claimAsset.
-	•	Consistent Configuration:
-The utility file (utils_lxly.js) ensures that all network configurations and provider details remain consistent.
-	•	API Tracking:
-Use the Transaction API endpoints to monitor the status and details of your cross-chain transfers.
+- **Transaction Flow:**
+  - Start with a **BRIDGED** state when you call `bridgeAsset`.
+  - The asset becomes **READY_TO_CLAIM** once available on the destination chain.
+  - It transitions to **CLAIMED** after you use `claimAsset`.
 
-Happy coding!
+- **Consistent Configuration:**  
+  The utility file (`utils_lxly.js`) ensures that all network configurations and provider details remain consistent.
 
-
+- **API Tracking:**  
+  Use the Transaction API endpoints to monitor the status and details of your cross-chain transfers.
