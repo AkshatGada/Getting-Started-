@@ -65,7 +65,7 @@ const getLxLyClient = async (network = 'testnet') => {
     }
   });
 }
-
+```
 ## 3. Bridging Assets (`bridge_asset.js`)
 
 This file demonstrates how to initiate a cross-chain asset transfer.
@@ -113,6 +113,7 @@ execute()
   .finally(() => {
     process.exit(0);
   });
+```
  
 ## 4. Claiming Bridged Assets (`claim_asset.js`)
 
@@ -160,6 +161,7 @@ execute()
   .catch(err => {
     console.error("err", err);
   });
+```
 
 ## Transaction API
 
@@ -182,6 +184,7 @@ The Transaction API provides detailed information on a bridge transaction associ
 ```bash
 curl --location 'https://api-gateway.polygon.technology/api/v3/transactions/mainnet?userAddress={userAddress}' \
 --header 'x-api-key: <your-api-key-here>'
+```
 
 ## Final Notes
 
