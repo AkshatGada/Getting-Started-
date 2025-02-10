@@ -15,9 +15,6 @@ Before you begin, ensure that you have the following:
   A Hardhat wallet (or similar) configured for testing.
 - **Testnet ETH:**  
   Acquire test ETH (from a faucet) for the Sepolia testnet.
-- **Postman:**  
-  (Optional) For querying the Bridge API endpoints.  
-  > **Tip:** Ask [@bseong](https://github.com/BrianSeong99) if there is a Postman collection available for Agglayer.
 
 ---
 
@@ -118,9 +115,9 @@ node bridge_asset.js
 ```
 
 
-## Step 4: Check Transaction Status via the Bridge API
+## Step 4: Check Transaction Status via the Transaction API
 
-Before proceeding with claiming the asset, you need to verify its current status using the Bridge API. This step is typically performed using Postman or a cURL command.
+Before proceeding with claiming the asset, you need to verify its current status using the Transaction API. This step is typically performed using Postman or a cURL command.
 
 ### API Endpoints
 
