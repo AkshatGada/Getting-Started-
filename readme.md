@@ -182,6 +182,11 @@ execute()
   });
 ```
 
+How to Run :
+```bash
+node claim_bridge_and_call.js
+```
+
 ## Step 5: Verify the Transaction Status
 
 Use Postman or cURL to query the Bridge API and verify the status of your transactions. This step ensures that:
@@ -196,7 +201,4 @@ https://api-gateway.polygon.technology/api/v3/transactions/testnet?userAddress={
 ```
 Replace {yourWalletAddress} with your actual wallet address, and include your API key in the request header.
 
-How to Run :
-```bash
-node claim_bridge_and_call.js
-```
+
