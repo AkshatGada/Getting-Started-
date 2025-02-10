@@ -34,16 +34,6 @@ Refer to the Agglayer Unified Bridge repository for sample configurations if nee
 
 In this step, run the `bridge_and_call.js` script to initiate a cross-chain transaction that calls the `increment` function on your deployed `Counter` contract. No token is transferred (amount is set to `0x0`), but the contract function is executed on the destination chain.
 
-**What Happens:**
-- **Token:** Set as Ether (address: `0x0000000000000000000000000000000000000000`)
-- **Amount:** `0x0` (no token transfer)
-- **Source Network:** Cardona (network ID: 1)
-- **Destination Network:** Silicon Sepolia (network ID: 0)
-- **Call Address:** Address of the deployed `Counter` contract on Silicon Sepolia
-- **Fallback Address:** User's address (to receive funds if the transaction fails)
-- **Call Data:** Encoded ABI for the `increment("0x4")` function call
-- **Force Update:** Global exit root update enabled
-
 **Code Walkthrough: `bridge_and_call.js`**
 ```javascript
 const { getLxLyClient, tokens, configuration, from } = require('./utils/utils_lxly');
