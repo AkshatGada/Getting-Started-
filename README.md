@@ -1,37 +1,37 @@
-# Unified Bridge & lxly.js Quick Start Guide
+# Agglayer Unified Bridge & lxly.js Step-by-Step Guide
 
-This guide will help you get started with the **Unified Bridge** and the **lxly.js** library. It covers the transaction states during bridging, describes the utility file for client initialization, demonstrates how to bridge and claim assets, and explains how to track your transactions using the Transaction API.
-
----
-
-## 1. Transaction States Overview
-
-When bridging assets, a transaction goes through three key states:
-
-- **BRIDGED:**  
-  The transaction has been initiated on the source chain via the `bridgeAsset` API.
-
-- **READY_TO_CLAIM:**  
-  The asset is now available on the destination chain and is waiting to be claimed.
-
-- **CLAIMED:**  
-  The asset has been successfully claimed on the destination chain using the `claimAsset` API.
+This guide will help you bridge assets from the Ethereum Sepolia testnet to Agglayer’s zkEVM network using the Unified Bridge and lxly.js. Follow these steps to configure your environment, bridge your asset, check its status using the Bridge API, and finally use the claim API to claim the transaction on the destination chain.
 
 ---
 
-## 2. Utility File: `utils_lxly.js`
+## Step 1: Set Up Your Environment (Prerequisites)
 
-The `utils_lxly.js` file sets up your connection with the Lxly bridge. It includes the `getLxLyClient` function, which:
+Before you begin, ensure that you have the following:
 
-- **Initializes the LxLy client:**  
-  Configures network details and logging.
+- **Node.js & npm:**
+  - **Node.js:** v14.0.0 or later
+  - **npm:** v6.0.0 or later
+- **Hardhat Wallet:**  
+  A Hardhat wallet (or similar) configured for testing.
+- **Testnet ETH:**  
+  Acquire test ETH (from a faucet) for the Sepolia testnet.
+- **Postman:**  
+  (Optional) For querying the Bridge API endpoints.  
+  > **Tip:** Ask [@bseong](https://github.com/BrianSeong99) if there is a Postman collection available for Agglayer.
 
-- **Sets up Providers:**  
-  Uses `HDWalletProvider` (or a similar provider) for each network with the required RPC endpoints, bridge contract addresses, and account details.
+---
 
-This file ensures that all network configurations are consistent and simplifies interacting with the bridge contracts.
+## Step 2: Configure Your Environment
 
-### Example: `utils_lxly.js`
+### 2.1 Update Your `config.js` File
+
+Make sure your `config.js` contains the correct network settings, RPC endpoints, bridge contract addresses, and account details. (See the [AggLayer Unified Bridge repository](https://github.com/BrianSeong99/AggLayer_UnifiedBridge) for a sample configuration.)
+
+### 2.2 Set Up the Utility File: `utils_lxly.js`
+
+This file initializes your connection with the Unified Bridge using lxly.js. It configures network providers (using HDWalletProvider or similar) for both the source and destination networks.
+
+#### Example: `utils_lxly.js`
 ```javascript
 const getLxLyClient = async (network = 'testnet') => {
   const lxLyClient = new LxLyClient();
@@ -39,6 +39,7 @@ const getLxLyClient = async (network = 'testnet') => {
     log: true,
     network: network,
     providers: {
+      // Source network: Sepolia Testnet (network ID: 0)
       0: {
         provider: new HDWalletProvider([config.user1.privateKey], config.configuration[0].rpc),
         configuration: {
@@ -51,6 +52,7 @@ const getLxLyClient = async (network = 'testnet') => {
           from: config.user1.address
         }
       },
+      // Destination network: zkEVM / Agglayer (network ID: 1)
       1: {
         provider: new HDWalletProvider([config.user1.privateKey], config.configuration[1].rpc),
         configuration: {
@@ -66,36 +68,32 @@ const getLxLyClient = async (network = 'testnet') => {
   });
 }
 ```
-## 3. Bridging Assets (`bridge_asset.js`)
 
-This file demonstrates how to initiate a cross-chain asset transfer.
+## Step 3: Bridge the Asset (`bridge_asset.js`)
 
-- **sourceNetworkId:**  
-  The network ID for the source chain (e.g., `0` for Sepolia).
+In this step, you will initiate a cross-chain asset transfer from the Sepolia testnet to zkEVM (Agglayer).
 
-- **destinationNetworkId:**  
-  The network ID for the destination chain (e.g., `1` for Cardona).
+**What Happens:**
+- **BRIDGED State:**  
+  When you call the `bridgeAsset` API, the transaction is initiated on the source chain.
 
-- **bridgeAsset API:**  
-  Invoked as `bridgeAsset(amount, userAddress, destinationNetwork)`, where `amount` is specified in the smallest unit (like wei for Ether).
-
-### Example: `bridge_asset.js`
+**Script Walkthrough: `bridge_asset.js`**
 ```javascript
-const { getLxLyClient, tokens, configuration, from, to } = require('./utils/utils_lxly');
+const { getLxLyClient, tokens } = require('./utils/utils_lxly');
 
 const execute = async () => {
     // Initialize the lxly client
     const client = await getLxLyClient();
 
-    // Define source network ID (e.g., Sepolia)
+    // Define source network ID (Sepolia Testnet)
     const sourceNetworkId = 0;
     // Get the API for the Ether token on the source network
     const token = client.erc20(tokens[sourceNetworkId].ether, sourceNetworkId);
 
-    // Define destination network ID (e.g., Cardona)
+    // Define destination network ID (zkEVM / Agglayer)
     const destinationNetworkId = 1;
     // Bridge a specific amount of Ether (in wei)
-    const result = await token.bridgeAsset("10000000000000000", to, destinationNetworkId);
+    const result = await token.bridgeAsset("10000000000000000", config.user1.address, destinationNetworkId);
 
     // Log the transaction hash and receipt
     const txHash = await result.getTransactionHash();
@@ -108,93 +106,103 @@ const execute = async () => {
 execute()
   .then(() => {})
   .catch(err => {
-    console.error("err", err);
+    console.error("Error bridging asset:", err);
   })
   .finally(() => {
     process.exit(0);
   });
 ```
- 
-## 4. Claiming Bridged Assets (`claim_asset.js`)
+How to Run:
+```bash
+node bridge_asset.js
+```
 
-After the asset has been bridged, you must claim it on the destination chain.
 
-- **sourceNetworkId:**  
-  The network ID for the source chain where the asset was originally bridged.
+## Step 4: Check Transaction Status via the Bridge API
 
-- **destinationNetworkId:**  
-  The network ID for the destination chain where the asset is now available.
+Before proceeding with claiming the asset, you need to verify its current status using the Bridge API. This step is typically performed using Postman or a cURL command.
 
-- **claimAsset API:**  
-  Invoked as `claimAsset(bridgeTransactionHash, sourceNetworkId, options)`, where `bridgeTransactionHash` is the hash returned from the `bridgeAsset` call.
+### API Endpoints
 
-### Example: `claim_asset.js`
+- **Testnet:**
+  ```bash
+  https://api-gateway.polygon.technology/api/v3/transactions/testnet?userAddress={userAddress}
+  ```
+  - **Mainnet:**
+    ```bash
+    https://api-gateway.polygon.technology/api/v3/transactions/mainnet?userAddress={userAddress}
+    ```
+    # Checking Transaction Status Using Postman
+
+Using Postman, import the API endpoint to check the status of your transaction. This query will return details such as the token bridged, the amount, and the current state of the transaction.
+
+## Step 5: Understand Transaction States
+
+After querying the Bridge API, you will receive information on the transaction states. The key states are:
+
+- **BRIDGED:**  
+  The transaction has been initiated on the source chain (Sepolia) via the `bridgeAsset` API.
+
+- **READY_TO_CLAIM:**  
+  The asset is now available on the destination chain (zkEVM / AggLayer) and is awaiting claim.
+
+- **CLAIMED:**  
+  The asset has been successfully claimed on the destination chain after using the `claimAsset` API.
+
+These states are verified by querying the API (for example, via Postman).
+
+## Step 6: Claim the Bridged Asset (`claim_asset.js`)
+
+Once the Bridge API shows that the asset is **READY_TO_CLAIM**, you can claim it on the destination chain using the claim API.
+
+### What Happens:
+- **CLAIMED State:**  
+  The asset moves from a pending state to claimed after executing the claim.
+
+### Script Walkthrough: `claim_asset.js`
 ```javascript
+const { getLxLyClient, tokens } = require('./utils/utils_lxly');
+
 const execute = async () => {
-    // The transaction hash from the bridgeAsset call on the source chain
+    // Replace with your actual bridge transaction hash from the bridge_asset.js output
     const bridgeTransactionHash = "0x1fc6858b20c75189a9fa8f3ae60c2a255cc3c41a058781f33daa57fc0f80b81a";
 		
     // Initialize the lxly client
     const client = await getLxLyClient();
     
-    // Define source network ID (e.g., Sepolia)
+    // Define source network ID (Sepolia Testnet)
     const sourceNetworkId = 0;
-    // Define destination network ID (e.g., Cardona)
+    // Define destination network ID (zkEVM / Agglayer)
     const destinationNetworkId = 1;
     // Get the API for the Ether token on the destination network
     const token = client.erc20(tokens[destinationNetworkId].ether, destinationNetworkId);
     
     // Claim the bridged asset using the claimAsset API
     const result = await token.claimAsset(bridgeTransactionHash, sourceNetworkId, { returnTransaction: false });
-    console.log("result", result);
+    console.log("Claim result:", result);
     
-    // Log the transaction hash and receipt
+    // Log the transaction hash and receipt for the claim transaction
     const txHash = await result.getTransactionHash();
-    console.log("txHash", txHash);
+    console.log("Claim txHash:", txHash);
     
     const receipt = await result.getReceipt();
-    console.log("receipt", receipt);
+    console.log("Claim receipt:", receipt);
 }
 
 execute()
   .then(() => {})
   .catch(err => {
-    console.error("err", err);
+    console.error("Error claiming asset:", err);
   });
 ```
-
-## Transaction API
-
-The Transaction API provides detailed information on a bridge transaction associated with a user’s wallet. It includes real-time status updates, the token bridged, the amount transferred, and the source and destination chains. This is especially useful for building user interfaces that display transaction statuses.
-
-### API Endpoints
-
-- **Testnet:**  
-  `https://api-gateway.polygon.technology/api/v3/transactions/testnet?userAddress={userAddress}`
-
-- **Mainnet:**  
-  `https://api-gateway.polygon.technology/api/v3/transactions/mainnet?userAddress={userAddress}`
-
-> **Note:**  
-> Replace `{userAddress}` with the wallet address associated with the cross-chain transaction.  
-> **Attach your API Key in the header!**
-
-### Example cURL Command
-
+How to run:
 ```bash
-curl --location 'https://api-gateway.polygon.technology/api/v3/transactions/mainnet?userAddress={userAddress}' \
---header 'x-api-key: <your-api-key-here>'
+node claim_asset.js
 ```
 
-## Final Notes
+## Step 7: Confirm the Final Transaction Status
 
-- **Transaction Flow:**
-  - Start with a **BRIDGED** state when you call `bridgeAsset`.
-  - The asset becomes **READY_TO_CLAIM** once available on the destination chain.
-  - It transitions to **CLAIMED** after you use `claimAsset`.
+After claiming the asset, verify the final state using the Bridge API:
 
-- **Consistent Configuration:**  
-  The utility file (`utils_lxly.js`) ensures that all network configurations and provider details remain consistent.
-
-- **API Tracking:**  
-  Use the Transaction API endpoints to monitor the status and details of your cross-chain transfers.
+1. **Query the Bridge API Again:**  
+   Use Postman or a cURL command to ensure that the transaction state has been updated to **CLAIMED**.
