@@ -200,6 +200,4 @@ node claim_asset.js
 ## Step 7: Confirm the Final Transaction Status
 
 After claiming the asset, verify the final state using the Bridge API:
-
-1. **Query the Bridge API Again:**  
-   Use Postman or a cURL command to ensure that the transaction state has been updated to **CLAIMED**.
+Use Postman or a cURL command to ensure that the transaction state has been updated to **CLAIMED**.
