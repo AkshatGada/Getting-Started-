@@ -125,7 +125,7 @@ Before proceeding with claiming the asset, you need to verify its current status
   ```bash
   https://api-gateway.polygon.technology/api/v3/transactions/testnet?userAddress={userAddress}
   ```
-  - **Mainnet:**
+ - **Mainnet:**
     ```bash
     https://api-gateway.polygon.technology/api/v3/transactions/mainnet?userAddress={userAddress}
     ```
