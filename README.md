@@ -1,6 +1,11 @@
-# Quickstart guide : Bridging Assets onto Agglayer 
+# Quickstart Guide : Set up your environment to interact with Agglayer
 
-This guide will help you bridge assets from the Ethereum Sepolia testnet to Agglayer’s zkEVM network using the Unified Bridge and lxly.js. Follow these steps to configure your environment, bridge your asset, check its status using the Bridge API, and finally use the claim API to claim the transaction on the destination chain.
+This guide will help you get familiar with LxLy.js, configure your code to interact with Agglayer chains, and bridge assets from the Ethereum Sepolia testnet to the Polygon zkEVM testnet using the Unified Bridge and lxly.js.
+In this guide you will:
+* Configure your environment
+* Bridge your asset
+* Check its status using the Bridge API
+* Use the claim API to claim the transaction on the destination chain.
 
 ---
 
