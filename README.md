@@ -16,8 +16,8 @@ Before you begin, ensure that you have the following:
 - **Node.js & npm:**
   - **Node.js:** v14.0.0 or later
   - **npm:** v6.0.0 or later
-- **Hardhat Wallet:**  
-  A Hardhat wallet (or similar) configured for testing.
+- **Crypto Wallet:**  
+  A Crypto wallet (or similar) configured for testing.
 - **Testnet ETH:**  
   Acquire test ETH (from a faucet) for the Sepolia testnet.
 
@@ -27,7 +27,7 @@ Before you begin, ensure that you have the following:
 
 ### 2.1 Update Your `config.js` File
 
-Make sure your `config.js` contains the correct network settings, RPC endpoints, bridge contract addresses, and account details. (See the [AggLayer Unified Bridge repository](https://github.com/BrianSeong99/AggLayer_UnifiedBridge) for a sample configuration.)
+Make sure your `config.js` contains the correct network settings, RPC endpoints, bridge contract addresses, and account details. (See the [Agglayer Unified Bridge repository](https://github.com/BrianSeong99/AggLayer_UnifiedBridge) for a sample configuration.)
 
 ### 2.2 Set Up the Utility File: `utils_lxly.js`
 
@@ -54,7 +54,7 @@ const getLxLyClient = async (network = 'testnet') => {
           from: config.user1.address
         }
       },
-      // Destination network: zkEVM / Agglayer (network ID: 1)
+      // Destination network: Polygon zkEVM (network ID: 1)
       1: {
         provider: new HDWalletProvider([config.user1.privateKey], config.configuration[1].rpc),
         configuration: {
@@ -134,9 +134,9 @@ Before proceeding with claiming the asset, you need to verify its current status
     ```bash
     https://api-gateway.polygon.technology/api/v3/transactions/mainnet?userAddress={userAddress}
     ```
-    # Checking Transaction Status Using Postman
+### Checking Transaction Status Using Postman
 
-Using Postman, import the API endpoint to check the status of your transaction. This query will return details such as the token bridged, the amount, and the current state of the transaction.
+Using Postman, import the API endpoint to check the status of your transaction. This query will return details such as the token bridged, the amount, and the current state of the transaction. Remember to get your API Key via this [link](https://polygontechnology.notion.site/api-gateway-service-documentation).
 
 ## Step 5: Understand Transaction States
 
@@ -205,4 +205,4 @@ node claim_asset.js
 ## Step 7: Confirm the Final Transaction Status
 
 After claiming the asset, verify the final state using the Bridge API:
-Use Postman or a cURL command to ensure that the transaction state has been updated to **CLAIMED**.
+Use Postman or a curl command to ensure that the transaction state has been updated to **CLAIMED**.
