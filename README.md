@@ -27,7 +27,7 @@ Before you begin, ensure that you have the following:
 
 ### 2.1 Update Your `config.js` File
 
-Make sure your `config.js` contains the correct network settings, RPC endpoints, bridge contract addresses, and account details. (See the [Agglayer Unified Bridge repository](https://github.com/BrianSeong99/Agglayer_UnifiedBridge/blob/main/scripts/config.js) for a sample configuration.)
+Make sure your `config.js` contains the correct network settings, RPC endpoints, bridge contract addresses, and account details. (See the [Agglayer Unified Bridge repository](https://github.com/BrianSeong99/Agglayer_UnifiedBridge/blob/main/scripts/config.js) for a sample configuration.) The reference `config.js` contains public rpc's as a placeholder , but it is recommended to get private rpc's for best results . 
 
 ### 2.2 Set Up the Utility File: `utils_lxly.js`
 
