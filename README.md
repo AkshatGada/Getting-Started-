@@ -8,6 +8,8 @@ In this guide you will:
 * Use the claim API to claim the transaction on the destination chain.
 
 ---
+Source repository - https://github.com/BrianSeong99/Agglayer_UnifiedBridge/tree/main/scripts/src
+---
 
 ## Step 1: Set Up Your Environment (Prerequisites)
 
